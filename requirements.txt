@@ -4,6 +4,5 @@ requests
 transformers
 torch
 gtts
-base64
 io
 googletrans
