@@ -11,11 +11,12 @@ from googletrans import Translator
 # Check if CUDA is available and set device
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Load the pretrained model and tokenizer
-model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning").to(device)
-tokenizer = GPT2TokenizerFast.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
-image_processor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
-translator = Translator()  # Initialize the Translator
+# Initialize models and processors only once using Streamlit's session state
+if 'model' not in st.session_state:
+    st.session_state.model = VisionEncoderDecoderModel.from_pretrained("nlpconnect/vit-gpt2-image-captioning").to(device)
+    st.session_state.tokenizer = GPT2TokenizerFast.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+    st.session_state.image_processor = ViTImageProcessor.from_pretrained("nlpconnect/vit-gpt2-image-captioning")
+    st.session_state.translator = Translator()
 
 def load_image(image_file):
     """Loads an image from a URL or a file uploader."""
@@ -27,16 +28,20 @@ def load_image(image_file):
     return image
 
 def generate_caption(image):
-    """Generates a caption for the image."""
-    inputs = image_processor(images=image, return_tensors="pt").to(device)
-    outputs = model.generate(**inputs)
-    caption = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    """Generates a caption for the image using preloaded model and tokenizer."""
+    inputs = st.session_state.image_processor(images=image, return_tensors="pt").to(device)
+    outputs = st.session_state.model.generate(**inputs)
+    caption = st.session_state.tokenizer.decode(outputs[0], skip_special_tokens=True)
     return caption
 
 def translate_text(text, dest_language):
     """Translates text to the specified language."""
-    translation = translator.translate(text, dest=dest_language)
-    return translation.text
+    try:
+        translation = st.session_state.translator.translate(text, dest=dest_language)
+        return translation.text
+    except Exception as e:
+        st.error(f"Failed to translate text due to: {e}")
+        return ""
 
 def caption_to_speech(caption, lang='en'):
     """Converts caption to speech and returns the audio file as a byte stream."""
