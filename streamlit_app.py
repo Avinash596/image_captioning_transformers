@@ -6,7 +6,7 @@ import torch
 from gtts import gTTS
 import base64
 from io import BytesIO
-from googletrans import Translator  # Import the Translator class
+from googletrans import Translator
 
 # Check if CUDA is available and set device
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -51,32 +51,6 @@ def get_audio_file_download_link(fp, filename):
     b64 = base64.b64encode(fp.getvalue()).decode()
     href = f'<a href="data:audio/mp3;base64,{b64}" download="{filename}">Download audio file</a>'
     return href
-
-# Embed CSS with Streamlit's markdown
-st.markdown("""
-<style>
-body {
-    font-family: 'Arial', sans-serif;
-}
-input, select, textarea {
-    font-size: 16px;
-    padding: 8px;
-    margin: 10px 0;
-}
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-button:hover {
-    background-color: #45a049;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # Streamlit UI setup
 st.title("Image Captioning with Audio Output")
