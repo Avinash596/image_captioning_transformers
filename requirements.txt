@@ -1,0 +1,7 @@
+streamlit
+gtts
+googletrans==4.0.0-rc1
+Pillow
+torch
+transformers
+requests
