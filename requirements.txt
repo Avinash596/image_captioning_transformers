@@ -3,5 +3,5 @@ gTTS==2.5.1
 Pillow==10.3.0
 Requests==2.31.0
 streamlit==1.33.0
-torch==2.2.1+cu121
+torch
 transformers==4.38.2
