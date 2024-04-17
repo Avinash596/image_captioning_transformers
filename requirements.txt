@@ -1,4 +1,7 @@
 streamlit
+streamlit-bokeh-events
+streamlit-webrtc
+streamlit -q
 gtts
 googletrans==4.0.0-rc1
 Pillow
